@@ -9,8 +9,9 @@ from sklearn.linear_model import Lasso
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
 import pickle
+from dotenv import load_dotenv
 
-from src.preprocessing import (
+from preprocessing import (
     transform_ts_data_into_features_and_target,
     get_preprocessing_pipeline
 )
@@ -19,6 +20,7 @@ from logger import get_console_logger
 from paths import MODELS_DIR
 
 logger = get_console_logger()
+load_dotenv()
 
 
 def get_baseline_model_error(X_test: pd.DataFrame, y_test: pd.Series) -> float:
@@ -51,9 +53,9 @@ def train(
     model_fn = get_model_fn_from_name(model)
 
     experiment = Experiment(
-        api_key = os.environ["COMET_ML_API_KEY"],
-        workspace=os.environ["COMET_ML_WORKSPACE"],
-        project_name = "hands-on-train-and-deploy-tutorial",
+        api_key = os.getenv("COMET_ML_API_KEY"),
+        workspace=os.getenv("COMET_ML_WS"),
+        project_name = "ghulam-rest-ml",
     )
     experiment.add_tag(model)
 
@@ -96,7 +98,7 @@ def train(
     # compute test MAE
     predictions = pipeline.predict(X_test)
     test_error = mean_absolute_error(y_test, predictions)
-    logger.info(f'Test MAE: {test_error}')
+    logger.info(f'Test MAE: {test_error}') #Mean Absolute Error
     experiment.log_metrics({'Test_MAE': test_error})
 
     # save the model to disk
@@ -105,7 +107,6 @@ def train(
         pickle.dump(pipeline, f)
 
     # log model artifact
-    # experiment.log_model('eth-eur-1h-price-predictor', str(MODELS_DIR / 'model.pkl'))
     experiment.log_model(str(model_fn), str(MODELS_DIR / 'model.pkl'))
     
     # breakpoint()

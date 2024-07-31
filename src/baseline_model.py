@@ -32,7 +32,7 @@ def train(
     experiment = Experiment(
         api_key = os.getenv("COMET_ML_API_KEY"),
         workspace=os.getenv("COMET_ML_WS"),
-        project_name = "ghulam_rest-ml",
+        project_name = "ghulam-rest-ml",
     )
     experiment.add_tag('baseline_model')
 
