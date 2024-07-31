@@ -6,9 +6,11 @@ from comet_ml import Experiment
 from sklearn.metrics import mean_absolute_error
 from sklearn.linear_model import Lasso
 
-
 from preprocessing import transform_ts_data_into_features_and_target
 from logger import get_console_logger
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = get_console_logger()
 
@@ -28,9 +30,9 @@ def train(
     possibly running hyperparameter tuning.
     """
     experiment = Experiment(
-        api_key = os.environ["COMET_ML_API_KEY"],
-        workspace=os.environ["COMET_ML_WORKSPACE"],
-        project_name = "hands-on-train-and-deploy-tutorial",
+        api_key = os.getenv("COMET_ML_API_KEY"),
+        workspace=os.getenv("COMET_ML_WS"),
+        project_name = "ghulam_rest-ml",
     )
     experiment.add_tag('baseline_model')
 
